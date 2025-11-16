@@ -4,30 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quantum Harmonic Oscillator</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        body { background: black; color: #00FFAA; text-align: center; font-family: "Courier New", monospace; }
-        .container { width: 80%; margin: auto; padding-top: 20px; }
-        canvas { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
-        .buttons { margin-top: 20px; }
+        body { 
+            background: #000;
+            color: #00FFAA;
+            text-align: center;
+            font-family: "Courier New", monospace;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container { 
+            width: 90%;
+            margin: auto;
+            padding-top: 20px;
+        }
+
+        canvas { 
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 12px;
+            box-shadow: 0 0 20px #00ffaa55;
+        }
+
+        .buttons { 
+            margin-top: 20px; 
+        }
+
         button { 
             background: linear-gradient(45deg, #00FFAA, #008a5c); 
             border: none; 
-            padding: 10px 20px; 
+            padding: 10px 25px; 
             font-size: 18px; 
             cursor: pointer; 
             margin: 10px; 
-            border-radius: 5px; 
+            border-radius: 8px; 
             transition: 0.3s; 
+            color: black;
+            font-weight: bold;
         }
-        button:hover { transform: scale(1.1); }
+
+        button:hover { 
+            transform: scale(1.12); 
+            box-shadow: 0 0 10px #00ffaa88;
+        }
+
+        #nValue {
+            font-size: 20px;
+            padding: 10px;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Quantum Harmonic Oscillator</h1>
         <h3>Wave Function Visualization</h3>
-        <canvas id="qhoGraph"></canvas>
+
+        <canvas id="qhoGraph" height="300"></canvas>
+
         <div class="buttons">
             <button onclick="changeState(-1)">Decrease n</button>
             <span id="nValue">n = 0</span>
@@ -37,37 +74,45 @@
 
     <script>
         let n = 0;
+
         const ctx = document.getElementById("qhoGraph").getContext("2d");
 
+        // Initial Chart.js setup
         let chart = new Chart(ctx, {
             type: "line",
-            data: { 
-                labels: [], 
-                datasets: [{
-                    label: "ψ(n, x)", 
-                    data: [], 
-                    borderColor: "#00FFAA", 
-                    borderWidth: 2 
-                }] 
-            },
-            options: { 
+            data: { labels: [], datasets: [{
+                label: "ψ²(n, x)",
+                data: [],
+                borderColor: "#00FFAA",
+                borderWidth: 2,
+                pointRadius: 0,
+                tension: 0.25
+            }]},
+            options: {
                 responsive: true,
-                scales: { 
-                    x: { beginAtZero: false }, 
-                    y: { beginAtZero: false } 
-                } 
+                animation: { duration: 500 },
+                scales: {
+                    x: { 
+                        ticks: { color: "#00FFAA" },
+                        title: { display: true, text: "Position (nm)", color: "#00FFAA" }
+                    },
+                    y: { 
+                        ticks: { color: "#00FFAA" },
+                        title: { display: true, text: "Probability Density", color: "#00FFAA" }
+                    }
+                }
             }
         });
 
-        // 🔥 UPDATED FOR VERCEL SERVERLESS API
+        // Fetch wave data from Vercel API
         function fetchWaveData(n) {
             fetch(`/api/wave?n=${n}`)
-                .then(response => response.json())
+                .then(res => res.json())
                 .then(data => {
-                    console.log("Fetched Data:", data);
 
                     if (!data.x || !data.y) {
-                        throw new Error("Invalid data format");
+                        console.error("Invalid response:", data);
+                        return;
                     }
 
                     chart.data.labels = data.x;
@@ -76,7 +121,7 @@
 
                     document.getElementById("nValue").innerText = `n = ${n}`;
                 })
-                .catch(error => console.error("Error fetching data:", error));
+                .catch(err => console.error("Fetch error:", err));
         }
 
         function changeState(delta) {
@@ -84,7 +129,7 @@
             fetchWaveData(n);
         }
 
-        // Load initial graph
+        // Initial load
         fetchWaveData(n);
     </script>
 </body>
