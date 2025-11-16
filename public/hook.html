@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hooke's Law Energy Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #121212;
+            color: white;
+        }
+        canvas {
+            width: 1000px !important;
+            height: 600px !important;
+            max-width: 100%;
+            margin: 20px auto;
+            background-color: #1e1e1e;
+        }
+    </style>
+</head>
+<body>
+    <h2>Hooke's Law Energy vs Displacement</h2>
+    <canvas id="energyChart"></canvas>
+
+    <script>
+        const k = 10; // Spring constant (N/m)
+        const A = 2;  // Amplitude (m)
+        const numPoints = 100;
+        
+        let xValues = [];
+        let peValues = [];
+        let keValues = [];
+        let tmeValues = [];
+        let TME = 0.5 * k * A * A; // Total Mechanical Energy (constant)
+
+        for (let i = 0; i < numPoints; i++) {
+            let x = -A + (2 * A * i) / (numPoints - 1); // Generate x values from -A to A
+            let pe = 0.5 * k * x * x; // PE = (1/2) k x^2
+            let ke = TME - pe; // KE = TME - PE
+            
+            xValues.push(x.toFixed(2));
+            peValues.push(pe);
+            keValues.push(ke);
+            tmeValues.push(TME);
+        }
+
+        new Chart(document.getElementById("energyChart"), {
+            type: 'line',
+            data: {
+                labels: xValues,
+                datasets: [
+                    { label: "Potential Energy (U)", data: peValues, borderColor: "red", borderDash: [5, 5], fill: false },
+                    { label: "Kinetic Energy (K)", data: keValues, borderColor: "blue", borderDash: [5, 5], fill: false },
+                    { label: "Total Mechanical Energy (E_Total)", data: tmeValues, borderColor: "green", borderWidth: 2, fill: false }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { labels: { color: 'white' }, position: 'top' },
+                    annotation: {
+                        annotations: {
+                            line1: {
+                                type: 'line',
+                                mode: 'vertical',
+                                scaleID: 'x',
+                                value: -A,
+                                borderColor: 'white',
+                                borderWidth: 1,
+                                borderDash: [5, 5],
+                                label: {
+                                    content: 'Turning Point (-A)',
+                                    enabled: true,
+                                    position: 'top',
+                                    color: 'white'
+                                }
+                            },
+                            line2: {
+                                type: 'line',
+                                mode: 'vertical',
+                                scaleID: 'x',
+                                value: A,
+                                borderColor: 'white',
+                                borderWidth: 1,
+                                borderDash: [5, 5],
+                                label: {
+                                    content: 'Turning Point (+A)',
+                                    enabled: true,
+                                    position: 'top',
+                                    color: 'white'
+                                }
+                            },
+                            equilibrium: {
+                                type: 'line',
+                                mode: 'vertical',
+                                scaleID: 'x',
+                                value: 0,
+                                borderColor: 'white',
+                                borderWidth: 2,
+                                label: {
+                                    content: 'Equilibrium Position',
+                                    enabled: true,
+                                    position: 'bottom',
+                                    color: 'white'
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: { 
+                    x: { title: { display: true, text: 'Displacement (x) [m]', color: 'white' }, ticks: { color: 'white' } }, 
+                    y: { title: { display: true, text: 'Energy (J)', color: 'white' }, ticks: { color: 'white' } } 
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Mechanics Hub</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.dots.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', sans-serif;
+            color: #ffffff;
+            background: #0A0A0A;
+            overflow-x: hidden;
+            cursor: url('https://cur.cursors-4u.net/special/spe-7/spe677.cur'), auto;
+        }
+        h1, h2, .game-title {
+            font-family: 'Helvetica Neue', sans-serif;
+            color: #004aad;
+        }
+        #vanta-bg {
+            position: absolute;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            margin: 20px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #004aad, #00E6E6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #ffffff;
+            margin: 0 15px;
+            font-size: 18px;
+            position: relative;
+            transition: 0.3s;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: #004aad;
+            bottom: -5px;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .logo img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Centered Buttons */
+        .center-buttons {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropbtn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 10px;
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+        .dropbtn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            min-width: 200px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.2);
+            z-index: 20;
+        }
+        .dropdown-content a {
+            color: #ffffff;
+            padding: 10px;
+            display: block;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .dropdown-content a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #004aad;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Video Section */
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        .video-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .video-container video {
+            max-width: 80%;
+            max-height: 80%;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05); /* More transparent glassmorphic effect */
+            padding: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 20px 50px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px 15px 0 0;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .footer-links a {
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        .footer-links a:hover {
+            color: #004aad;
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-trail-container"></div>
+    <div id="vanta-bg"></div>
+    <div class="navbar">
+        <div class="logo">
+            <img src="mylogo.jpeg" alt="Quantum Hub Logo">
+        </div>
+        <div class="nav-links">
+            <a href="#">HOME</a>
+            <a href="tools.html">TOOLS USED</a>
+            <a href="about.html">ABOUT US</a>
+        </div>
+    </div>
+    <div class="center-buttons">
+        <div class="dropdown">
+            <button class="dropbtn">CONCEPTS</button>
+            <div class="dropdown-content">
+                <a href="spring.html">Classical Model - Spring</a>
+                <a href="#">Simple Pendulum</a>
+                <a href="hook.html">Energy Graph</a>
+                <a href="diff.html">Difference</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">MODELS</button>
+            <div class="dropdown-content">
+                <a href="#">Particle in Infinite Box</a>
+                <a href="#">Finite Box</a>
+                <a href="#">Quantum Tunneling</a>
+                <a href="http://127.0.0.1:5000">Harmonic Oscillator</a>
+                <a href="probability.html">Probability Density</a>
+            </div>
+        </div>
+    </div>
+    <div class="video-container">
+        <video autoplay  muted>
+            <source src="logo.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <div class="footer">
+        <div class="footer-links">
+            <a href="about.html">About Us</a>
+            <a href="mailto: cb.sc.u4cse24033@cb.students.amrita.edu">Contact</a>
+            <a href="privacy.html">Privacy Policy</a>
+        </div>
+    </div>
+
+    <audio id="hover-sound" src="hover-sound.mp3"></audio> 
+    <audio id="click-sound" src="click-sound.mp3"></audio>
+
+    <script>
+        // Initialize Vanta.js DOTS effect
+        VANTA.DOTS({
+            el: "#vanta-bg",
+            color: 0x004aad,
+            backgroundColor: 0x0A0A0A,
+            size: 2.00,
+            spacing: 20.00,
+            showLines: false
+        });
+
+        // Animate video on scroll
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            const videoContainer = document.querySelector('.video-container');
+            const videoPosition = videoContainer.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.3;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop) {
+                // Scrolling down
+                if (videoPosition < screenPosition) {
+                    videoContainer.classList.add('visible');
+                }
+            } else {
+                // Scrolling up
+                if (videoPosition > screenPosition) {
+                    videoContainer.classList.remove('visible');
+                }
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+
+        // Add soothing sound on button hover/click
+        const buttons = document.querySelectorAll('.dropbtn, .dropdown-content a');
+        const hoverSound = document.getElementById('hover-sound');
+        const clickSound = document.getElementById('click-sound');
+
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                hoverSound.currentTime = 0;
+                hoverSound.play();
+            });
+            button.addEventListener('click', () => {
+                clickSound.currentTime = 0;
+                clickSound.play();
+            });
+        });
+    </script>
+</body>
+</html>

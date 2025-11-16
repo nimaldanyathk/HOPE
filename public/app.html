@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Wave Simulation</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; background: #101820; color: white; }
+        button { margin: 10px; padding: 10px 20px; font-size: 18px; background: #0A74DA; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0F58A0; }
+        img { margin-top: 20px; border-radius: 10px; box-shadow: 0px 0px 10px cyan; }
+    </style>
+</head>
+<body>
+    <h1>Quantum Probability Density Visualizer</h1>
+    <p>Select Quantum State (n):</p>
+    <button onclick="updateGraph(1)">n = 1</button>
+    <button onclick="updateGraph(2)">n = 2</button>
+    <button onclick="updateGraph(3)">n = 3</button>
+    <button onclick="updateGraph(4)">n = 4</button>
+
+    <div>
+        <img id="quantumPlot" src="" alt="Quantum Probability Density">
+    </div>
+
+    <script>
+        function updateGraph(n) {
+            fetch(`/simulate/${n}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('quantumPlot').src = data.image;
+            });
+        }
+        updateGraph(1);  // Load default state (n=1)
+    </script>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classical vs Quantum Harmonic Oscillator: A Detailed Comparison</title>
+  <style>
+    /* General Styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      height: 300vh;
+      scroll-behavior: smooth;
+      scroll-snap-type: mandatory;
+    }
+
+    h2 {
+      color: #004aad;
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      color:#004aad;
+      font-size: 1.5rem;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    /* Glassmorphic Section Styling */
+    .section {
+      width: 90%;
+      max-width: 1000px;
+      height: auto;
+      padding: 30px;
+      margin: 5vh auto;
+      box-sizing: border-box;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05); /* More transparent */
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      opacity: 0;
+      transform: translateY(40px) scale(0.95);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      overflow-y: auto;
+    }
+
+    /* Active Section */
+    .section.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      box-shadow: 0 0 40px #004aad;
+      border: 1px solid #004aad;
+    }
+
+    /* Text Styling */
+    p, ul, li {
+      font-size: 1rem;
+      line-height: 1.6rem;
+      text-align: justify;
+      margin: 0;
+    }
+
+    /* Table Styling */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 0.95rem;
+    }
+
+    .comparison-table th, .comparison-table td {
+      padding: 12px;
+      border: 1px solid #444;
+      text-align: center;
+    }
+
+    .comparison-table th {
+      background-color: #004aad;
+      color: #121212;
+    }
+
+    .comparison-table tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .comparison-table tr:nth-child(odd) {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Sprinkle Effect */
+    .sprinkle {
+      position: fixed;
+      background-color:#004aad;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #004aad, 0 0 12px#004aad;
+      opacity: 0.8;
+      pointer-events: none;
+      z-index: -1;
+      transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      h3 {
+        font-size: 1.2rem;
+      }
+
+      .section {
+        padding: 20px;
+        height: auto;
+      }
+
+      .comparison-table th, .comparison-table td {
+        padding: 10px;
+        font-size: 0.85rem;
+      }
+
+      p, ul, li {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <!-- Classical Harmonic Oscillator -->
+  <div class="section">
+    <h2>Classical Harmonic Oscillator</h2>
+    <p>A classical harmonic oscillator is a simple system where a particle (like a mass on a spring) moves back and forth because of a restoring force. The force follows Hooke’s law:</p>
+    <p><strong>F = -kx</strong></p>
+    <p>Where:</p>
+    <ul>
+      <li><strong>F</strong> = Force pulling it back to the center</li>
+      <li><strong>k</strong> = Stiffness of the spring</li>
+      <li><strong>x</strong> = Displacement from the center</li>
+    </ul>
+    <h3>How it behaves:</h3>
+    <ul>
+      <li>The particle can have any energy — no restrictions.</li>
+      <li>It moves in a smooth, continuous path (like a sine wave).</li>
+      <li>The total energy includes both kinetic and potential energy:
+        <p><strong>E = ½mv² + ½kx²</strong></p>
+      </li>
+      <li>At rest, the energy can be zero — the particle just sits still.</li>
+    </ul>
+    <h3>Example:</h3>
+    <p>Think of a swing — you pull it back, let go, and it swings back and forth smoothly, losing energy slowly due to friction.</p>
+  </div>
+
+  <!-- Quantum Harmonic Oscillator -->
+  <div class="section">
+    <h2>Quantum Harmonic Oscillator</h2>
+    <p>Now, things get weird at the quantum level. When the system is small enough (like an atom), classical rules stop working, and quantum mechanics takes over.</p>
+    <h3>Key differences:</h3>
+    <ul>
+      <li>Energy levels are discrete — the particle can’t have just any energy; it can only have specific "steps" of energy:
+        <p><strong>E<sub>n</sub> = ℏω(n + ½)</strong></p>
+        <p>Where:</p>
+        <ul>
+          <li><strong>n = 0, 1, 2, 3, …</strong> (quantum number)</li>
+          <li><strong>ℏ</strong> = Reduced Planck’s constant</li>
+          <li><strong>ω</strong> = Angular frequency</li>
+        </ul>
+      </li>
+      <li>Zero-point energy — Even at the lowest energy state (<strong>n = 0</strong>), the particle still has some energy:
+        <p><strong>E<sub>0</sub> = ½ℏω</strong></p>
+        <p>So the particle is never truly at rest.</p>
+      </li>
+      <li>Uncertainty principle — You can't know both the exact position and momentum of the particle at the same time:
+        <p><strong>ΔxΔp ≥ ℏ/2</strong></p>
+        <p>This makes the particle’s motion kind of “fuzzy.”</p>
+      </li>
+      <li>Wave nature — The particle behaves like both a particle and a wave, described by a wave function <strong>ψ(x)</strong> from Schrödinger’s equation:
+        <p><strong>Ĥψ(x) = Eψ(x)</strong></p>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Why Classical Fails and Quantum Takes Over -->
+  <div class="section">
+    <h2>Why Classical Fails and Quantum Takes Over</h2>
+    <p>So why do we need quantum mechanics at all?</p>
+    <h3>👉 In classical physics:</h3>
+    <ul>
+      <li>Energy can be any value — but in quantum physics, energy is quantized (only certain values are allowed).</li>
+      <li>A particle at rest should have zero energy — but in quantum physics, even the lowest state has energy (zero-point energy).</li>
+      <li>Classical physics says you can measure position and momentum at the same time — quantum mechanics says nope, uncertainty principle.</li>
+      <li>Classical physics works fine for big objects — but at small scales (like atoms), it completely breaks down.</li>
+    </ul>
+  </div>
+
+  <!-- Key Differences (Simple Version) -->
+  <div class="section" id="last-section">
+    <h2>Key Differences (Simple Version)</h2>
+    <table class="comparison-table">
+      <tr>
+        <th>Feature</th>
+        <th>Classical</th>
+        <th>Quantum</th>
+      </tr>
+      <tr>
+        <td>Energy levels</td>
+        <td>Continuous</td>
+        <td>Discrete</td>
+      </tr>
+      <tr>
+        <td>Lowest energy</td>
+        <td>Zero</td>
+        <td>Non-zero (zero-point energy)</td>
+      </tr>
+      <tr>
+        <td>Motion</td>
+        <td>Smooth and predictable</td>
+        <td>Fuzzy and uncertain</td>
+      </tr>
+      <tr>
+        <td>Behavior</td>
+        <td>Acts like a particle</td>
+        <td>Acts like both particle and wave</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<script>
+  // Sprinkle Setup
+  const sprinkles = [];
+
+  function createSprinkle() {
+    const sprinkle = document.createElement('div');
+    sprinkle.classList.add('sprinkle');
+    const size = Math.random() * 4 + 2;
+    sprinkle.style.width = `${size}px`;
+    sprinkle.style.height = `${size}px`;
+    sprinkle.style.left = `${Math.random() * 100}vw`;
+    sprinkle.style.top = `${Math.random() * 100}vh`;
+
+    document.body.appendChild(sprinkle);
+    sprinkles.push(sprinkle);
+
+    requestAnimationFrame(() => {
+      const duration = Math.random() * 5 + 5;
+      sprinkle.style.transition = `transform ${duration}s linear, opacity ${duration}s linear`;
+      sprinkle.style.transform = `translateY(${window.innerHeight}px) scale(1.5)`;
+      sprinkle.style.opacity = 0;
+    });
+
+    setTimeout(() => {
+      sprinkle.remove();
+      sprinkles.splice(sprinkles.indexOf(sprinkle), 1);
+    }, 10000);
+  }
+
+  function updateSprinklesOnScroll() {
+    const scrollPos = window.scrollY;
+    const depth = (scrollPos / window.innerHeight) * 2;
+
+    sprinkles.forEach(sprinkle => {
+      const scale = 1 + depth * 0.3;
+      sprinkle.style.transform = `translateY(${scrollPos * 0.5}px) scale(${scale})`;
+      sprinkle.style.opacity = Math.max(0.3, 1 - depth * 0.5);
+    });
+  }
+
+  setInterval(createSprinkle, 30);
+  window.addEventListener('scroll', updateSprinklesOnScroll);
+
+  for (let i = 0; i < 100; i++) createSprinkle();
+
+  // Scroll Fade Animation
+  const sections = document.querySelectorAll('.section');
+  window.addEventListener('scroll', () => {
+    sections.forEach(section => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.6 && rect.bottom > window.innerHeight * 0.4) {
+        section.classList.add('active');
+      } else {
+        section.classList.remove('active');
+      }
+    });
+  });
+
+  // Scroll Lock at Last Section
+  const lastSection = document.getElementById('last-section');
+  let isScrollLocked = false;
+
+  window.addEventListener('scroll', () => {
+    const rect = lastSection.getBoundingClientRect();
+    if (rect.top <= 0 && !isScrollLocked) {
+      isScrollLocked = true;
+      window.scrollTo({ top: rect.top + window.scrollY, behavior: 'smooth' });
+    } else if (rect.top > 0) {
+      isScrollLocked = false;
+    }
+  });
+</script>
+
+</body>
+</html>

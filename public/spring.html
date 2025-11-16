@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonic Oscillator Simulation</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        canvas {
+            background-color: #1e1e1e;
+            border: 2px solid green;
+            margin: 10px;
+        }
+        .container {
+            display: flex;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 820px;
+        }
+        .label {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 5px;
+            flex: 1;
+        }
+        .info {
+            font-size: 16px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .equation {
+            font-size: 20px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            color: #ffcc00;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <div class="label">Real Space</div>
+        <div class="label">Phase Space</div>
+    </div>
+    <div class="container">
+        <canvas id="realCanvas"></canvas>
+        <canvas id="phaseCanvas"></canvas>
+    </div>
+    <div class="info" id="info">Force: 0 N | Max Amplitude: 0 | Equilibrium: 0</div>
+    <div class="equation">Hooke's Law: F = -k x</div>
+    <script>
+        const realCanvas = document.getElementById("realCanvas");
+        const realCtx = realCanvas.getContext("2d");
+        const phaseCanvas = document.getElementById("phaseCanvas");
+        const phaseCtx = phaseCanvas.getContext("2d");
+        const info = document.getElementById("info");
+        
+        realCanvas.width = phaseCanvas.width = 400;
+        realCanvas.height = phaseCanvas.height = 300;
+        
+        let massX = 250;
+        let velocity = 0;
+        let acceleration = 0;
+        let k = 0.05;
+        let mass = 10;
+        let equilibrium = 250;
+        let damping = 0.99;
+        let phasePoints = [];
+        let dragging = false;
+        let maxAmplitude = 0;
+
+        function drawSpring(x, y, length) {
+            realCtx.beginPath();
+            realCtx.moveTo(x, y);
+            let coils = 10;
+            let coilWidth = length / coils;
+            for (let i = 1; i <= coils; i++) {
+                let direction = i % 2 === 0 ? -10 : 10;
+                realCtx.lineTo(x + i * coilWidth, y + direction);
+            }
+            realCtx.lineTo(x + length, y);
+            realCtx.strokeStyle = "#00ff00";
+            realCtx.lineWidth = 3;
+            realCtx.stroke();
+        }
+
+        function animate() {
+            realCtx.clearRect(0, 0, realCanvas.width, realCanvas.height);
+            phaseCtx.fillStyle = "rgba(30, 30, 30, 0.2)";
+            phaseCtx.fillRect(0, 0, phaseCanvas.width, phaseCanvas.height);
+            
+            if (!dragging) {
+                let displacement = massX - equilibrium;
+                let force = -k * displacement;
+                acceleration = force / mass;
+                velocity += acceleration;
+                velocity *= damping;
+                massX += velocity;
+                maxAmplitude = Math.max(maxAmplitude, Math.abs(displacement));
+            }
+            
+            realCtx.fillStyle = "#ffffff";
+            realCtx.fillRect(50, 100, 10, 100);
+            
+            realCtx.fillStyle = "#ffcc00";
+            realCtx.fillRect(equilibrium, 140, 5, 20);
+            
+            drawSpring(60, 150, massX - 60);
+            
+            realCtx.beginPath();
+            realCtx.arc(massX, 150, 20, 0, Math.PI * 2);
+            realCtx.fillStyle = "#green";
+            realCtx.fill();
+            realCtx.strokeStyle = "green";
+            realCtx.stroke();
+            
+            let displacement = massX - equilibrium;
+            phasePoints.push({ x: displacement * 2 + phaseCanvas.width / 2, y: -velocity * 10 + phaseCanvas.height / 2 });
+            if (phasePoints.length > 500) {
+                phasePoints.shift();
+            }
+            
+            phaseCtx.strokeStyle = "green";
+            phaseCtx.beginPath();
+            for (let i = 0; i < phasePoints.length - 1; i++) {
+                phaseCtx.moveTo(phasePoints[i].x, phasePoints[i].y);
+                phaseCtx.lineTo(phasePoints[i + 1].x, phasePoints[i + 1].y);
+            }
+            phaseCtx.stroke();
+            
+            info.innerHTML = `Force: ${(-k * displacement).toFixed(2)} N | Max Amplitude: ${maxAmplitude.toFixed(2)} | Equilibrium: ${equilibrium}`;
+            
+            requestAnimationFrame(animate);
+        }
+
+        realCanvas.addEventListener("mousedown", (event) => {
+            let rect = realCanvas.getBoundingClientRect();
+            let mouseX = event.clientX - rect.left;
+            let mouseY = event.clientY - rect.top;
+            let distance = Math.sqrt((mouseX - massX) ** 2 + (mouseY - 150) ** 2);
+            if (distance < 20) {
+                dragging = true;
+            }
+        });
+
+        realCanvas.addEventListener("mousemove", (event) => {
+            if (dragging) {
+                let rect = realCanvas.getBoundingClientRect();
+                massX = event.clientX - rect.left;
+            }
+        });
+
+        realCanvas.addEventListener("mouseup", () => { dragging = false; });
+        realCanvas.addEventListener("mouseleave", () => { dragging = false; });
+
+        animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
+  <title>GSAP Image Change Example</title>
+  <style>
+    body {
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .image-container img {
+      width: 300px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 12px;
+      transition: opacity 0.5s ease;
+    }
+  </style>
+</head>
+<body>
+
+<div class="image-container">
+  <img id="image" src="letsphy.jpeg" alt="Image" />
+</div>
+
+<script>
+  // Change image with fade effect
+  function changeImage() {
+    // Fade out current image
+    TweenMax.to("#image", 0.5, {
+      opacity: 0,
+      onComplete: function () {
+        // Change the image source back to 'letsphy.jpeg'
+        document.getElementById("image").src = "letsphy.jpeg";
+
+        // Fade in new image
+        TweenMax.to("#image", 0.5, { opacity: 1 });
+      },
+    });
+  }
+
+  // Trigger the image change after 2 seconds
+  setTimeout(changeImage, 2000);
+</script>
+
+</body>
+</html>

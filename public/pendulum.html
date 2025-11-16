@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Simple Pendulum</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+    canvas {
+      display: block;
+    }
+    #logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      width: 100px;
+      height: auto;
+    }
+    #info {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+      color: white;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Your Logo -->
+  <img id="logo" src="mylogo.jpeg" alt="Logo">
+
+  <!-- Info Panel -->
+  <div id="info">
+    <p>Hooke's Law: F = -kx</p>
+    <p>Force: <span id="force">0 N</span></p>
+  </div>
+
+  <!-- Three.js Script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r146/three.min.js"></script>
+  <script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Lighting
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(5, 5, 5).normalize();
+    scene.add(light);
+
+    // Pendulum Setup
+    const pendulumLength = 5;
+    const bobRadius = 0.5;
+    const amplitude = Math.PI / 4; // 45 degrees
+
+    // Bob
+    const bobGeometry = new THREE.SphereGeometry(bobRadius, 32, 32);
+    const bobMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 });
+    const bob = new THREE.Mesh(bobGeometry, bobMaterial);
+    bob.position.set(0, -pendulumLength, 0);
+    scene.add(bob);
+
+    // String
+    const stringGeometry = new THREE.CylinderGeometry(0.05, 0.05, pendulumLength, 8);
+    const stringMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
+    const string = new THREE.Mesh(stringGeometry, stringMaterial);
+    string.position.set(0, -pendulumLength / 2, 0);
+    string.rotation.z = Math.PI / 2;
+    scene.add(string);
+
+    // Anchor Point
+    const anchorGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+    const anchorMaterial = new THREE.MeshPhongMaterial({ color: 0x0000ff });
+    const anchor = new THREE.Mesh(anchorGeometry, anchorMaterial);
+    anchor.position.set(0, 0, 0);
+    scene.add(anchor);
+
+    // Camera Position
+    camera.position.set(0, 0, 10);
+    camera.lookAt(0, 0, 0);
+
+    // Variables for Interaction
+    let isDragging = false;
+    let mouseX = 0, mouseY = 0;
+    let angle = 0;
+
+    // Event Listeners for Dragging
+    document.addEventListener('mousedown', (event) => {
+      isDragging = true;
+    });
+    document.addEventListener('mouseup', (event) => {
+      isDragging = false;
+    });
+    document.addEventListener('mousemove', (event) => {
+      if (isDragging) {
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        angle = mouseX * amplitude;
+      }
+    });
+
+    // Animation Loop
+    const animate = () => {
+      requestAnimationFrame(animate);
+
+      // Update Pendulum Position
+      if (!isDragging) {
+        angle = amplitude * Math.sin(Date.now() * 0.002); // Oscillation
+      }
+
+      bob.position.x = pendulumLength * Math.sin(angle);
+      bob.position.y = -pendulumLength * Math.cos(angle);
+
+      string.position.x = bob.position.x / 2;
+      string.position.y = bob.position.y / 2;
+      string.rotation.z = -angle;
+
+      // Update Force Display
+      const force = -angle * 10; // Simulated Hooke's Law (F = -kx)
+      document.getElementById('force').textContent = `${force.toFixed(2)} N`;
+
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    // Handle Window Resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
